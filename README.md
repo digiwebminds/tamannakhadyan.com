@@ -1,1 +1,1 @@
-# tamannakhadyan.com
+This website is created and designed by DigiWebMinds - digiwebminds.com
