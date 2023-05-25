@@ -13,10 +13,9 @@
     <a class="flex title-font font-medium items-center md:justify-start justify-center text-white">
       <span class="ml-3 text-xl">TamannaKhadyan</span>
     </a>
-    <p class="text-sm text-white   sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">Designed and maintained By :- 
-      <!-- <a href="https://twitter.com/knyttneve" class="text-gray-600 ml-1" rel="noopener noreferrer" target="_blank">@mohitrawal</a> -->
+    <p class="text-sm text-white   sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">Designed and maintained by &nbsp; :
     </p>
-    <span class="ml-3 text-xl text-green-600">DigiWebMinds</span>
+    <span class="ml-3 text-xl text-yellow-300"><a href="https://digiwebminds.com">DigiWebMinds</a></span>
     <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
       <a href="http://instagram.com/DigiWebMinds" class="ml-3 text-gray-400">
         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">

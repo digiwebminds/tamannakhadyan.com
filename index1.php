@@ -77,7 +77,7 @@
       <!-- End Title -->
 
       <div class="max-w-3xl text-center mx-auto">
-        <p class="text-lg text-gray-400">Add any Text You want to add (hey developers)</p>
+        <p class="text-lg text-gray-400">Keep track of all the loans from one place</p>
       </div>
 
       <!-- Buttons -->
