@@ -1,3 +1,39 @@
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// session_start();
+// if (isset($_SESSION['username'])){
+    // header('location:home.php') ;
+//     echo "Some error";
+// } else
+if($_SERVER['REQUEST_METHOD']=='POST'){
+
+  include '../include/connect.php';
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM customers WHERE username='$username' and password='$password'" ;
+
+$result = mysqli_query($conn,$sql);
+    if ($result){
+        $num2 = mysqli_num_rows($result);
+        if($num2 > 0){
+        // echo "User Verified";
+        // session_start();
+        // $_SESSION['username']=$username;
+        // // $_SESSION['email']=$email;
+        header ('location:cust_dashboard.php'); 
+    } else {
+        echo "<script>alert('Invalid Username & Password'); </script>";
+        // echo '<script>alert("Your message here");</script>';
+        // header ('location:signup.php');
+    }
+}
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +55,7 @@
   <!--google font end-->
 </head>
 <body>
-     <!--Header start-->
+<!--Header start-->
  <nav class="bg-gray-900 w-full z-20 border-b border-gray-200 border-gray-600">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a href="#" class="flex items-center">
@@ -56,7 +92,7 @@
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Login to your account
               </h1>
-              <form class="space-y-4 md:space-y-6" action="#">
+              <form class="space-y-4 md:space-y-6" method="POST" action="">
                   <div>
                       <label for="username" class="block mb-2 text-sm font-medium text-white">Username</label>
                       <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Enter Username" required>
