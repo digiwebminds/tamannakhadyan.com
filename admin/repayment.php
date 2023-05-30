@@ -13,9 +13,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../include/js/repayment.js"></script>
-    
+    <style>
+  .modal {
+    display: none;
+  }
 
-    
+  .modal-overlay {
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  .modal-header {
+    border-color: #ddd;
+  }
+</style>
+
+
 </head>
 
 <body>
@@ -36,21 +49,50 @@
         </div>
     </section>
 
-
     <div id="loaninfo"></div>
 
 
 
 
+    <!-- model code -->
 
+    <!-- <button id="openModalButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Open Modal</button> -->
 
+<!-- <div id="myModal" class="modal hidden fixed inset-0 flex items-center justify-center z-50">
+  <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+  <div class="modal-content bg-white text-gray-800 rounded shadow-lg w-1/2">
+    <div class="modal-header flex justify-between px-4 py-3 border-b">
+      <h3 class="font-bold">Modal Title</h3>
+      <span class="close cursor-pointer">&times;</span>
+    </div>
+    <div class="modal-body p-4">
+      <div>
+        <label class="block mb-2">Input 1</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter Input 1">
+      </div>
+      <div class="mt-4">
+        <label class="block mb-2">Input 2</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter Input 2">
+      </div>
+      <div class="mt-4">
+        <label class="block mb-2">Input 3</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter Input 3">
+      </div>
+      <div class="mt-4">
+        <label class="block mb-2">Input 4</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter Input 4">
+      </div>
+      <div class="mt-4">
+        <label class="block mb-2">Input 5</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter Input 5">
+      </div>
+    </div>
+    <div class="modal-footer flex justify-end p-4 border-t">
+      <button id="submitButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+    </div>
+  </div>
+</div> -->
 
-
-
-
-
-
-   
 </body>
 
 </html>
