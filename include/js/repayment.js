@@ -61,8 +61,20 @@ $(document).ready(function () {
         });
     })
 
+    //all jquery for installment info modal
 
+    // Open the modal when the button is clicked
+    $(document).on('click','#openpaidinstallmentinfo', function(){
+      $('#paidinstallmentModal').removeClass('hidden');
 
+    })
+
+    // Close the modal when the close button/icon is clicked
+
+    $(document).on('click','#closeInstallmentinfoModal', function(){
+      $('#paidinstallmentModal').addClass('hidden');
+      })
+  
 
 
 });
