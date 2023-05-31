@@ -12,7 +12,7 @@
     <?php
     include ("../include/navbar.php");
     ?>
-    <button><a href="add_loan.php">add cc loan</a></button>
+    <button><a href="add_loan.php">Add loan</a></button>
     <h1>fetch loans here</h1>
 </body>
 </html>
