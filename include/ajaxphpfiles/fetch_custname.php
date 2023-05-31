@@ -21,13 +21,20 @@ if (isset($_POST['customer_id'])) {
 
   $stmt->close();
 }
-// echo "hello";
 
-if (isset($_POST['roi']) && isset($_POST['principal'])) {
-  $roi = $_POST['roi'];
-  $principal = $_POST['principal'];
-  $installment = $principal * ($roi / 100);
-  echo $installment;
+if(isset($_POST['principal'])){
+  if(isset($_POST['roi'])){
+    $roi = $_POST['roi'];
+    $principal = $_POST['principal'];
+    $installment = $principal * ($roi / 100);
+    echo $installment;
+  }
+  if(isset($_POST['installment'])){
+    $installment = $_POST['installment'];
+    $principal = $_POST['principal'];
+    $roi = ($installment/$principal)*100;
+    echo $roi;
+  }
 }
 
 
@@ -246,4 +253,72 @@ if (isset($_POST['dorepay']) && isset($_POST['loan_id']) && isset($_POST['instal
   </div>';
   }
  
+}
+
+
+//interdependent code of last date of repayment and number of days
+if(isset($_POST['dor'])){
+  if(isset($_POST['days'])){
+    $dor = strtotime($_POST['dor']);
+    $days = $_POST['days'] * 86400;
+    $ldorloan = $dor + $days;
+    echo date("Y-m-d",$ldorloan);
+  }
+  if(isset($_POST['ldorloan'])){
+    $dor = strtotime($_POST['dor']);
+    $ldorloan = strtotime($_POST['ldorloan']);
+    $days = $ldorloan - $dor;
+    echo date("j",$days);
+  }
+}
+
+//input fields according to loan category select
+if(isset($_POST['tol'])){
+  if($_POST['tol'] == 1){
+    echo '<div class="w-full">
+        <label for="principle-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Principle Amount</label>
+        <input type="number" name="principle-amount" id="principle-amount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+    </div>
+    <div class="w-full">
+        <label for="roi" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate of Interest
+        </label>
+        <input type="text" name="roi" id="roi" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required placeholder="%">
+    </div>
+    <div class="w-full">
+        <label for="installment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Installment Amount
+        </label>
+        <input type="text" name="installment" id="installment" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    </div>';
+  }
+  if($_POST['tol'] == 2){
+    echo '<div class="w-full">
+        <label for="principle-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Principle Amount</label>
+        <input type="number" name="principle-amount" id="principle-amount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+    </div>
+    <div class="w-full">
+        <label for="roi" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate of Interest
+        </label>
+        <input type="text" name="roi" id="roi" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required placeholder="%">
+    </div>
+    <div class="w-full">
+        <label for="installment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Installment Amount
+        </label>
+        <input type="text" name="installment" id="installment" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    </div>
+    <div class="w-full">
+        <label for="total" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Amount
+        </label>
+        <input type="text" name="total" id="total" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    </div>
+    <div class="w-full">
+        <label for="days" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Days
+        </label>
+        <input type="text" name="days" id="days" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    </div>
+    <div class="w-full">
+        <label for="ldorloan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last date of Repayment</label>
+        <input type="date" name="ldorloan" id="ldorloan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+    </div>
+    </div>';
+  }
 }
