@@ -95,6 +95,7 @@ if(isset($_POST['submit'])){
 <body>
     <?php
     include ("../include/navbar.php");
+    date_default_timezone_set("Asia/Calcutta");
     ?>
     <section class="bg-gray-400">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
