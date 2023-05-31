@@ -34,12 +34,34 @@ if (isset($_POST['roi']) && isset($_POST['principal'])) {
 if (isset($_POST['loanid'])) {
 
   $loanid = $_POST['loanid'];
-  $sql = "select l.id,c.name,c.fname,c.city,c.phone,c.photo,l.principle,l.dor,l.loan_type,l.installment,l.roi from customers as c 
-JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
+  $sql = "select c.id as cust_id,l.id,c.name,c.fname,c.city,COUNT(c.phone),c.photo,l.principle,l.dor,l.loan_type,l.installment,l.roi from customers as c 
+  JOIN loans as l on c.id=l.customer_id
+  JOIN repayment as re on l.id=re.loan_id where l.id = $loanid";
+
   $result = mysqli_query($conn, $sql);
   if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
       $loan_type = $row['loan_type'];
+
+      $startDate = strtotime($row['dor']);
+      $today = strtotime(date('Y-m-d'));
+      if ($loan_type == 1) {
+        $frequency = 1;
+      } elseif ($loan_type == 2) {
+        $frequency = 1;
+      } elseif ($loan_type == 3) {
+        $frequency = 7;
+      } else {
+        $frequency = 30;
+      }
+
+      $totalInstallments = floor(($today - $startDate) / (60 * 60 * 24 * $frequency));
+      $currentDate = $startDate;
+      $paidInstallments = $row['COUNT(c.phone)'];
+      $unpaidInstallments = $totalInstallments - $paidInstallments;
+
+
+
       echo '<div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
   <table class="w-full text-sm text-left font-bold text-gray-500 dark:text-gray-900">
   <tbody>
@@ -70,17 +92,23 @@ JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Total Installment Till Today </th>
-      <td class="px-6 py-4 border border-gray-700">change Here
+      <td class="px-6 py-4 border border-gray-700">'. $totalInstallments .'
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Paid Installments </th>
-      <td class="px-6 py-4 border border-gray-700">change Here
+      <td class="px-6 py-4 border border-gray-700">'.$paidInstallments.'&nbsp;( Paid Amount: '. $paidInstallments*$row["installment"].')
+      
+      &nbsp;<button id="openpaidinstallmentinfo" class="text-black font-bold py-2 px-4 rounded">
+      <i class="fa-solid fa-circle-info"></i>
+      </button>
+      
+      
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> UnPaid Installments </th>
-      <td class="px-6 py-4 border border-gray-700">change Here
+      <td class="px-6 py-4 border border-gray-700">'.$unpaidInstallments.'&nbsp;( Unpaid Amount: '. $unpaidInstallments*$row["installment"].')
       </td>
       </tr>
       </tr>
@@ -99,22 +127,22 @@ JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
 
       /// repayment modal below
       echo '<div id="myModal" class="modal hidden fixed inset-0 flex items-center justify-center z-50">
-<div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+// <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
 <div class="modal-content bg-white text-gray-800 rounded shadow-lg w-1/2">
   
 <form action="" method="POST">
               <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 p-4">
-                  <div id="repaymentalert"></div>
+                  
                   <div>
-                      <label for="dorepay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">D.O.Repayment</label>
+                      <label for="dorepay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">D.O.Repayment</label>
                       <input type="date" name="dorepay" id="dorepay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                   </div>
                   <div>
-                      <label for="loan_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loan ID</label>
+                      <label for="loan_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Loan ID</label>
                       <input type="number" name="loan_id" id="loan_id" value="' . $row['id'] . '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required readonly>
                   </div>
                   <div>
-                      <label for="loantype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loan Type</label>
+                      <label for="loantype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Loan Type</label>
                       <input type="text" name="loantype" id="loantype" value="';
 
       if ($loan_type == 1) {
@@ -130,10 +158,10 @@ JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
       echo '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required readonly>
                   </div>
                   <div>
-                      <label for="install-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Installment Amount</label>
+                      <label for="install-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Installment Amount</label>
                       <input type="number" name="install-amount" id="install-amount" value="' . $row['installment'] . '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                   </div>
-                  
+                  <div id="repaymentalert"></div>
                   <button type="submit" id="repaysubmitbtnn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                       Pay Installment
                   </button>
@@ -141,9 +169,50 @@ JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
           </form>
   
 </div>
-</div>
+</div>';
 
-';
+
+
+echo '<div id="paidinstallmentModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+  
+  <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+    <!-- Modal Content -->
+    <div class="modal-content py-4 text-left px-6">
+      <!-- Close Button/Icon -->
+
+      <button id="closeInstallmentinfoModal" class="close-button border bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+      <i class="fa-solid fa-xmark"></i>
+</button>
+      <table class="text-left w-full">
+		<thead class="bg-black flex text-white w-full">
+			<tr class="flex w-full mb-4">
+				<th class="p-4 w-1/4">Date</th>
+				<th class="p-4 w-1/4">Installment</th>
+			</tr>
+		</thead>
+    <!-- Remove the nasty inline CSS fixed height on production and replace it with a CSS class — this is just for demonstration purposes! -->
+		<tbody class="bg-grey-light flex flex-col items-center justify-between overflow-y-scroll w-full" style="height: 30vh;">
+			';
+
+      require_once "../connect.php";
+      
+      $sql2 = "SELECT DORepayment,installment_amount FROM `repayment` where loan_id=$loanid";
+      $result2 = mysqli_query($conn,$sql2);
+      if (mysqli_num_rows($result2) > 0) {
+        while ($row2 = mysqli_fetch_assoc($result2)) {
+
+          echo '<tr class="flex w-full mb-4"><td class="p-4 w-1/4">'.$row2['DORepayment'].'</td>
+          <td class="p-4 w-1/4">'.$row2['installment_amount'].'</td></tr>';
+
+            }
+          }
+				echo'</tbody>
+  </table>
+  </div>
+  </div>
+  </div>
+</div>';
     }
   } else {
     echo '<div class="flex p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
@@ -155,9 +224,6 @@ JOIN loans as l on c.id=l.customer_id where l.id=$loanid";
   </div>';
   }
 }
-
-
-
 
 
 // code to enter repayment details in database 
