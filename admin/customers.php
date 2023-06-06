@@ -29,7 +29,7 @@
 
     <?php
     include("../include/connect.php");
-    $query = "SELECT * FROM customers";
+    $query = "SELECT * FROM customers WHERE deleted = 0";
     $result  = mysqli_query($conn, $query);
     $rowcount = mysqli_num_rows($result);
     echo '<input type="hidden" name="rowcount" id="rowcount" value=' . $rowcount . '>';

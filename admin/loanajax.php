@@ -4,8 +4,8 @@ require_once("pagination.class.php");
 
 $perPage = new PerPage();
 
-$sql = "SELECT * FROM customers WHERE deleted = 0";
-$paginationlink = "custajax.php?page=";
+$sql = "SELECT * from loans";
+$paginationlink = "loanajax.php?page=";
 
 $page = 1;
 if (!empty($_GET["page"])) {
@@ -37,33 +37,22 @@ $output .= '<table class="w-full text-sm text-left text-gray-400">
 				S.no.
 			</th>
 			<th scope="col" class="px-6 py-3">
+				Loan type
+			</th>
+			<th scope="col" class="px-6 py-3">
 				Cust. Id
 			</th>
 			<th scope="col" class="px-6 py-3">
-				Name
+				Cust. Name
 			</th>
 			<th scope="col" class="px-6 py-3">
-				Address
-			</th>
+                Principal
+            </th>
 			<th scope="col" class="px-6 py-3">
-				Mobile
-			</th>
-			<th scope="col" class="px-6 py-3">
-				Guarantor Name
-			</th>
-			<th scope="col" class="px-6 py-3">
-				Guarantor Details
+                Installment
 			</th>
 			<th scope="col" class="px-6 py-3">
 				Date of Reg.
-			</th>
-			<th scope="col" class="px-6 py-3">
-				Cust. Photo
-			</th>
-			<th scope="col" class="px-6 py-3">
-				Gtr. Photo
-			</th>
-			<th scope="col" class="px-6 py-3">
 			</th>
 			<th scope="col" class="px-6 py-3">
 			</th>
@@ -73,29 +62,15 @@ $output .= '<table class="w-full text-sm text-left text-gray-400">
 $i = $start * 1;
 foreach ($faq as $k => $v) {
 	$i++;
-	if ($faq[$k]['photo'] != null || $faq[$k]['photo'] != '') {
-		$image = $faq[$k]['photo'];
-	} else {
-		$image = "../uploaded/defaultcustomer.png";
-	}
-	if ($faq[$k]['gphoto'] != null || $faq[$k]['gphoto'] != '') {
-		$gimage = $faq[$k]['gphoto'];
-	} else {
-		$gimage = "../uploaded/defaultcustomer.png";
-	}
 	$output .= "<tr class='border-b bg-gray-800 border-gray-700'>
 		<th>" . $i . "</th>
-		<td>" . $faq[$k]['id'] . "</td>
-		<td>" . $faq[$k]['name'] . "</td>
-		<td>" . $faq[$k]['address'] . "</td>
-		<td>" . $faq[$k]['phone'] . "</td>
-		<td>" . $faq[$k]['gname'] . "</td>
-		<td>" . $faq[$k]['gaddress'] . "</td>
+		<td>" . $faq[$k]['loan_type'] . "</td>
+		<td>" . $faq[$k]['customer_id'] . "</td>
+		<td>" . $faq[$k]['customer_name'] . "</td>
+		<td>" . $faq[$k]['principle'] . "</td>
+		<td>" . $faq[$k]['installment'] . "</td>
 		<td>" . $faq[$k]['dor'] . "</td>
-		<td><img src='$image' style='object-fit:fill; width:60px; height:60px;'></td>
-		<td><img src='$gimage' style='object-fit:fill; width:60px; height:60px;'></td>
-		<td>" . '<button> <a href="add_user.php?id='.$faq[$k]['id'].'">Update</a></button></td>
-		<td><button><a href="delete.php?id='.$faq[$k]['id'].'" >Delete</a></button>
+		<td>" . '<button> <a href="update.php?updateSno=' . $faq[$k]['id'] . '" > Update</a></button> <button><a href="delete.php?deleteSno=' . $faq[$k]['id'] . '" > Delete </a> </button></td>
 			</tr>';
 }
 $output .= '</tbody>
@@ -104,3 +79,21 @@ if (!empty($perpageresult)) {
 	$output .= '<div id="pagination grid h-screen place-items-center">' . $perpageresult . '</div>';
 }
 print $output;
+// foreach ($faq as $k => $v) {
+// 	$i++;
+// 	$output .= "<tr class='border-b bg-gray-800 border-gray-700'>
+// 		<th>" . $i . "</th>
+// 		<td>";
+//     if($faq[$k]['loan_type'] == 1){ $output .= "CC";}
+//     if($faq[$k]['loan_type'] == 2){ $output .= "Daily";}
+//     if($faq[$k]['loan_type'] == 3){ $output .= "Weekly";}
+//     if($faq[$k]['loan_type'] == 4){ $output .= "Monthly";}
+//     $output = "</td>
+// 		<td>" . $faq[$k]['customer_id'] . "</td>
+// 		<td>" . $faq[$k]['customer_name'] . "</td>
+// 		<td>" . $faq[$k]['principle'] . "</td>
+// 		<td>" . $faq[$k]['installment'] . "</td>\
+// 		<td>" . $faq[$k]['dor'] . "</td>
+// 		<td>" . '<button> <a href="update.php?updateSno=' . $faq[$k]['id'] . '" > Update</a></button> <button><a href="delete.php?deleteSno=' . $faq[$k]['id'] . '" > Delete </a> </button></td>
+// 			</tr>';
+// }

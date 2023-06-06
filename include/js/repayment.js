@@ -57,6 +57,9 @@ $(document).ready(function () {
             data: { 'dorepay': dorepay, 'loan_id': loan_id, 'installmentamt': installmentamt},
             success: function (data) {
                 $("#repaymentalert").html(data);
+                window.setTimeout(function(){
+                    $("#myModal").addClass("hidden");
+                }, 1500);
             }
         });
     })
