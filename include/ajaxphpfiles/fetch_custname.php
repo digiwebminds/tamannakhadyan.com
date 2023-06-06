@@ -41,9 +41,13 @@ if(isset($_POST['principal'])){
 if (isset($_POST['loanid'])) {
 
   $loanid = $_POST['loanid'];
-  $sql = "select c.id as cust_id,l.id,c.name,c.fname,c.city,COUNT(c.phone),c.photo,l.principle,l.dor,l.loan_type,l.installment,l.roi from customers as c 
-  JOIN loans as l on c.id=l.customer_id
-  JOIN repayment as re on l.id=re.loan_id where l.id = $loanid";
+  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+  FROM customers AS c
+  JOIN loans AS l ON c.id = l.customer_id
+  LEFT JOIN repayment AS re ON l.id = re.loan_id
+  WHERE l.id = $loanid
+  GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+  HAVING phone_count > 0 ";
 
   $result = mysqli_query($conn, $sql);
   if (mysqli_num_rows($result) > 0) {
@@ -64,7 +68,7 @@ if (isset($_POST['loanid'])) {
 
       $totalInstallments = floor(($today - $startDate) / (60 * 60 * 24 * $frequency));
       $currentDate = $startDate;
-      $paidInstallments = $row['COUNT(c.phone)'];
+      $paidInstallments = $row['phone_count'];
       $unpaidInstallments = $totalInstallments - $paidInstallments;
 
 
