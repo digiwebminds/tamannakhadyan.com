@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include "../include/navbar.php";
     date_default_timezone_set("Asia/Calcutta");
     ?>
-    <!-- <h1>hefuie</h1> -->
+
     <section class="bg-white dark:bg-gray-900">
         <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
             <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add a new Loan</h2>
