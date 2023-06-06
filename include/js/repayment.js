@@ -77,8 +77,38 @@ $(document).ready(function () {
     $(document).on('click','#closeInstallmentinfoModal', function(){
       $('#paidinstallmentModal').addClass('hidden');
       })
-  
 
+
+
+
+
+
+      // this is for modalrepayment PRINCIPLE
+
+      // Open the modal when the button is clicked
+    $(document).on('click', '#openModalprinciplerepay', function () {
+        // Open the modal
+        $("#myModalrepayprinciple").removeClass("hidden");
+    });
+
+    // Close the modal when the close button or outside modal area is clicked
+    $(document).on('click', '.close, .modal-overlay', function () {
+        // Open the modal
+        $("#myModalrepayprinciple").addClass("hidden");
+    });
+
+    // Prevent modal from closing when the modal content is clicked
+    $(document).on('click', '.modal-content', function (e) {
+        // Open the modal
+        e.stopPropagation();
+    });
+
+    // Prevent modal from closing on submit button click
+    $(document).on('click', '#repayprinciplesubmitbtnn', function (e) {
+        // Open the modal
+        e.preventDefault();
+    });
+  
 
 });
 

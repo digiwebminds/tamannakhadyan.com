@@ -13,9 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $installment = $_POST['installment'];
     $timestamp = time();
 
+    if($loancategory == 1){
+        $total = NULL;
+    }elseif($loancategory == 2){
+        $total = $_POST['total'];
+    }
 
-
-    $sql = "INSERT INTO `loans` (`customer_id`, `customer_name`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`timestamp`) VALUES ('$customerid', '$customername', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$timestamp)";
+    $sql = "INSERT INTO `loans` (`customer_id`, `customer_name`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`timestamp`) VALUES ('$customerid', '$customername', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$timestamp)";
 
     $result = mysqli_query($conn, $sql);
 
@@ -24,8 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '<div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
             <span class="font-medium">Loan Created!</span><a href="loan.php"> Click here to View Loan Page </a>
           </div>';
-        // echo "<script>alert('Loan Created');</script>";
-
     } else {
         die(mysqli_error($conn));
     }
