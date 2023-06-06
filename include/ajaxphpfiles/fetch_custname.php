@@ -41,13 +41,13 @@ if(isset($_POST['principal'])){
 if (isset($_POST['loanid'])) {
 
   $loanid = $_POST['loanid'];
-  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count,COUNT(re.loan_id) as emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
   FROM customers AS c
   JOIN loans AS l ON c.id = l.customer_id
   LEFT JOIN repayment AS re ON l.id = re.loan_id
   WHERE l.id = $loanid
   GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
-  HAVING phone_count > 0 ";
+  HAVING phone_count > 0;";
 
   $result = mysqli_query($conn, $sql);
   if (mysqli_num_rows($result) > 0) {
@@ -57,18 +57,22 @@ if (isset($_POST['loanid'])) {
       $startDate = strtotime($row['dor']);
       $today = strtotime(date('Y-m-d'));
       if ($loan_type == 1) {
+        $loanname = 'CC Loan';
         $frequency = 1;
       } elseif ($loan_type == 2) {
+        $loanname = 'Daily Loan';
         $frequency = 1;
       } elseif ($loan_type == 3) {
+        $loanname = 'Weekly Loan';
         $frequency = 7;
       } else {
+        $loanname = 'Monthly Loan';
         $frequency = 30;
       }
 
       $totalInstallments = floor(($today - $startDate) / (60 * 60 * 24 * $frequency));
       $currentDate = $startDate;
-      $paidInstallments = $row['phone_count'];
+      $paidInstallments = $row['emi_count'];
       $unpaidInstallments = $totalInstallments - $paidInstallments;
 
 
@@ -76,6 +80,12 @@ if (isset($_POST['loanid'])) {
       echo '<div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
   <table class="w-full text-sm text-left font-bold text-gray-500 dark:text-gray-900">
   <tbody>
+  <tr class="border-b border-gray-200 dark:border-gray-700">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Loan Type </th>
+        <td class="px-6 py-4 border border-gray-700">' . $loanname . '
+        </td>
+      </tr>
+
   <tr class="border-b border-gray-200 dark:border-gray-700">
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Name </th>
         <td class="px-6 py-4 border border-gray-700">' . $row['name'] . '
@@ -114,7 +124,6 @@ if (isset($_POST['loanid'])) {
       <i class="fa-solid fa-circle-info"></i>
       </button>
       
-      
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -128,8 +137,16 @@ if (isset($_POST['loanid'])) {
       <td class="px-6 py-4 border border-gray-700">
       <button id="openModalButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pay Installment</button>
       </td>
-      </tr>
-      </tbody>
+      </tr>';
+      if ($loan_type == 1) {
+        echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Repay Principle </th>
+        <td class="px-6 py-4 border border-gray-700">
+        <button id="openModalprinciplerepay" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pay Principle</button>
+        </td>
+        </tr>';
+      }
+      echo '</tbody>
       </table>
 </div>';
 
@@ -183,6 +200,44 @@ if (isset($_POST['loanid'])) {
 </div>';
 
 
+// repay principle modal below
+
+echo '<div id="myModalrepayprinciple" class="modal hidden fixed inset-0 flex items-center justify-center z-50">
+// <div class="modal-overlay outsidemodal absolute w-full h-full bg-gray-900 opacity-50"></div>
+<div class="modal-content bg-white text-gray-800 rounded shadow-lg w-1/2">
+  
+<form action="" method="POST">
+              <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 p-4">
+                  
+                  <div>
+                      <label for="dorepayprinciple" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">D.O.Repayment Principle</label>
+                      <input type="date" name="dorepayprinciple" id="dorepayprinciple" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                  </div>
+                  <div>
+                      <label for="loan_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Loan ID</label>
+                      <input type="number" name="loan_id" id="loan_id" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required readonly>
+                  </div>
+                  <div>
+                      <label for="loantype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Loan Type</label>
+                      <input type="text" name="loantype" id="loantype" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required readonly>
+                  </div>
+                  <div>
+                      <label for="principle-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Installment Amount</label>
+                      <input type="number" name="principle-amount" id="principle-amount" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                  </div>
+
+                  <div id="repaymentprinciplealert"></div>
+
+                  <button type="submit" id="repayprinciplesubmitbtnn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                      Pay Installment
+                  </button>
+              </div>
+          </form>
+  
+</div>
+</div>';
+
+//paid installments table modal here
 
 echo '<div id="paidinstallmentModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
   <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
