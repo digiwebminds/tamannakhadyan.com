@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $installment = $_POST['installment'];
     $days_weeks_months = $_POST['days'];
     $timestamp = time();
+    
 
     if($loancategory == 1){
         $total = NULL;
