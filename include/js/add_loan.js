@@ -15,26 +15,26 @@ $(document).ready(function() {
     });
 
     //to calculate installment on basis of ROI & Principle amount
-    $(document).on("keyup", "#roi", function() {
+    $(document).on("keyup", "#ccroi", function() {
         var roi = $(this).val();
-        var principal = $("#principle-amount").val();
+        var principal = $("#ccprinciple-amount").val();
 
         if(!$.isNumeric(roi) || principal == ""){
             $(this).css("border","2px solid red");
-            $("#installment").css("border","2px solid red");
-            $("#installment").val("");
+            $("#ccinstallment").css("border","2px solid red");
+            $("#ccinstallment").val("");
             return false;
         }else{
             $(this).css("border","");
-            $("#installment").css("border","");
+            $("#ccinstallment").css("border","");
         }
 
         $.ajax({
             url: '../include/ajaxphpfiles/fetch_custname.php',
             type: 'POST',
-            data: { 'roi': roi ,'principal': principal },
+            data: { 'ccroi': roi ,'ccprincipal': principal },
             success: function(data) {
-                $("#installment").val(data);
+                $("#ccinstallment").val(data);
             }
             // error: function() {
             //     alert("error");
@@ -42,53 +42,98 @@ $(document).ready(function() {
         });
     });
 
-    //to calculate installment on basis of Installment amount & Principle amount
-    $(document).on("keyup", "#installment", function() {
+    //to calculate roi on basis of Installment amount & Principle amount
+    $(document).on("keyup", "#ccinstallment", function() {
         var installment = $(this).val();
-        var principal = $("#principle-amount").val();
+        var principal = $("#ccprinciple-amount").val();
 
         if(!$.isNumeric(installment) || principal == ""){
             $(this).css("border","2px solid red");
-            $("#roi").css("border","2px solid red");
-            $("#roi").val("");
+            $("#ccroi").css("border","2px solid red");
+            $("#ccroi").val("");
             return false;
         }else{
             $(this).css("border","");
-            $("#roi").css("border","");
+            $("#ccroi").css("border","");
         }
 
         $.ajax({
             url: '../include/ajaxphpfiles/fetch_custname.php',
             type: 'POST',
-            data: { 'installment': installment ,'principal': principal },
+            data: { 'ccinstallment': installment ,'ccprincipal': principal },
             success: function(data) {
-                $("#roi").val(data);
+                $("#ccroi").val(data);
             }
         });
     });
 
-    //to calculate last date of repayment on the basis of number of days and date of registration
-    $(document).on("keyup", "#days", function() {
+    //to calculate roi(in ₹) on basis of roi(in %) and principal amount
+    // $(document).on("keyup", "#roi", function() {
+    //     var roi = $(this).val();
+    //     var principal = $("#principle-amount").val();
+
+    //     if(!$.isNumeric(roi) || principal == ""){
+    //         $(this).css("border","2px solid red");
+    //         $("#roir").css("border","2px solid red");
+    //         $("#roir").val("");
+    //         return false;
+    //     }else{
+    //         $(this).css("border","");
+    //         $("#roir").css("border","");
+    //     }
+
+    //     $.ajax({
+    //         url: '../include/ajaxphpfiles/fetch_custname.php',
+    //         type: 'POST',
+    //         data: { 'roi': roi ,'principal': principal },
+    //         success: function(data) {
+    //             $("#roir").val(data);
+    //         }
+    //         // error: function() {
+    //         //     alert("error");
+    //         //   }
+    //     });
+    // });
+
+    //to calculate last date of repayment, total amount, installments on the basis of number of days, date of registration and principal amount
+    $(document).on("keyup", "#days, #dorloan, #roi, #principle-amount, #ldorloan", function() {
         var dor = $("#dorloan").val();
-        var days = $(this).val();
+        var days = $("#days").val();
         var loancat = $("#loancategory").val();
+        var roi = $("#roi").val();
+        var principal = $("#principle-amount").val();
         // alert(loancat);
 
-        if(!$.isNumeric(days)){
-            $(this).css("border","2px solid red");
+        if(!$.isNumeric(days) || !$.isNumeric(roi) || !$.isNumeric(principal)){
+            $("#days").css("border","2px solid red");
+            $("#roi").css("border","2px solid red");
+            $("#principle-amount").css("border","2px solid red");
             $("#ldorloan").css("border","2px solid red");
+            $("#submit").attr("disabled", true);
+            $("#submit").css("color","#ff3333");
+            $("#submit").css("border","2px solid red");
             return false;
         }else{
-            $(this).css("border","");
+            $("#days").css("border","");
+            $("#roi").css("border","");
+            $("#principle-amount").css("border","");
             $("#ldorloan").css("border","");
+            $("#submit").attr("disabled", false);
+            $("#submit").css("color","");
+            $("#submit").css("border","");
         }
 
         $.ajax({
             url: '../include/ajaxphpfiles/fetch_custname.php',
             type: 'POST',
-            data: { 'dor': dor ,'days': days, 'loancat': loancat },
+            data: { 'dor': dor ,'days': days, 'loancat': loancat, 'roi' : roi, 'principal' : principal},
             success: function(data) {
-                $("#ldorloan").val(data);
+                // console.log(data);
+                var data = JSON.parse(data);
+                $("#ldorloan").val(data.ldorloan);
+                $("#total").val(data.total);
+                $("#installment").val(data.installment);
+                $("#roir").val(data.roir);
             }
         });
     });
@@ -132,6 +177,8 @@ $(document).ready(function() {
             }
         });
     });
+
+
 
 });
 
