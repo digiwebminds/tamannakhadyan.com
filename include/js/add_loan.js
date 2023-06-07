@@ -71,6 +71,8 @@ $(document).ready(function() {
     $(document).on("keyup", "#days", function() {
         var dor = $("#dorloan").val();
         var days = $(this).val();
+        var loancat = $("#loancategory").val();
+        // alert(loancat);
 
         if(!$.isNumeric(days)){
             $(this).css("border","2px solid red");
@@ -84,7 +86,7 @@ $(document).ready(function() {
         $.ajax({
             url: '../include/ajaxphpfiles/fetch_custname.php',
             type: 'POST',
-            data: { 'dor': dor ,'days': days },
+            data: { 'dor': dor ,'days': days, 'loancat': loancat },
             success: function(data) {
                 $("#ldorloan").val(data);
             }
@@ -95,6 +97,7 @@ $(document).ready(function() {
     $(document).on("change", "#ldorloan", function(){
         var dor = $("#dorloan").val();
         var ldorloan = $(this).val();
+        var loancat = $("#loancategory").val();
 
         if(ldorloan < dor){
             $(this).css("border","2px solid red");

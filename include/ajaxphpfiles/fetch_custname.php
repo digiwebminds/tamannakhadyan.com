@@ -316,6 +316,24 @@ if (isset($_POST['dorepay']) && isset($_POST['loan_id']) && isset($_POST['instal
 
 
 //interdependent code of last date of repayment and number of days
+
+// not changing this
+
+if(isset($_POST['dor'])){
+  if(isset($_POST['days'])){
+    $dor = strtotime($_POST['dor']);
+    $days = $_POST['days'] * 86400;
+    $ldorloan = $dor + $days;
+    echo date("Y-m-d",$ldorloan);
+  }
+  if(isset($_POST['ldorloan'])){
+    $dor = strtotime($_POST['dor']);
+    $ldorloan = strtotime($_POST['ldorloan']);
+    $days = $ldorloan - $dor;
+    echo date("j",$days);
+  }
+}
+
 if(isset($_POST['dor'])){
   if(isset($_POST['days'])){
     $dor = strtotime($_POST['dor']);
@@ -349,7 +367,7 @@ if(isset($_POST['tol'])){
         <input type="text" name="installment" id="installment" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
     </div>';
   }
-  if($_POST['tol'] == 2){
+  if($_POST['tol'] == 2 || $_POST['tol'] == 3 || $_POST['tol'] == 4){
     echo '<div class="w-full">
         <label for="principle-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Principle Amount</label>
         <input type="number" name="principle-amount" id="principle-amount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
@@ -369,10 +387,18 @@ if(isset($_POST['tol'])){
         </label>
         <input type="text" name="total" id="total" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
     </div>
-    <div class="w-full">
-        <label for="days" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Days
-        </label>
-        <input type="text" name="days" id="days" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    <div class="w-full">';
+    if($_POST['tol'] == 2){
+      echo '<label for="days" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Days
+      </label>';
+    }elseif($_POST['tol'] == 3){
+      echo '<label for="days" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Weeks
+      </label>';
+    }else{
+      echo '<label for="days" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Months
+      </label>';
+    }
+       echo '<input type="text" name="days" id="days" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
     </div>
     <div class="w-full">
         <label for="ldorloan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last date of Repayment</label>
