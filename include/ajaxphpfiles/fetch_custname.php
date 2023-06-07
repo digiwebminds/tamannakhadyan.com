@@ -317,35 +317,67 @@ if (isset($_POST['dorepay']) && isset($_POST['loan_id']) && isset($_POST['instal
 
 //interdependent code of last date of repayment and number of days
 
-// not changing this
+// commenting this if other is not worked 
+
+// if(isset($_POST['dor'])){
+//   if(isset($_POST['days'])){
+//     $dor = strtotime($_POST['dor']);
+//     $days = $_POST['days'] * 86400;
+//     $ldorloan = $dor + $days;
+//     echo date("Y-m-d",$ldorloan);
+//   }
+//   if(isset($_POST['ldorloan'])){
+//     $dor = strtotime($_POST['dor']);
+//     $ldorloan = strtotime($_POST['ldorloan']);
+//     $days = $ldorloan - $dor;
+//     echo date("j",$days);
+//   }
+// }
+
+//this code is for interdependent no. of days/weeks/month & last day of repayment
 
 if(isset($_POST['dor'])){
-  if(isset($_POST['days'])){
-    $dor = strtotime($_POST['dor']);
-    $days = $_POST['days'] * 86400;
-    $ldorloan = $dor + $days;
-    echo date("Y-m-d",$ldorloan);
-  }
-  if(isset($_POST['ldorloan'])){
-    $dor = strtotime($_POST['dor']);
-    $ldorloan = strtotime($_POST['ldorloan']);
-    $days = $ldorloan - $dor;
-    echo date("j",$days);
-  }
-}
 
-if(isset($_POST['dor'])){
-  if(isset($_POST['days'])){
-    $dor = strtotime($_POST['dor']);
-    $days = $_POST['days'] * 86400;
-    $ldorloan = $dor + $days;
-    echo date("Y-m-d",$ldorloan);
+  if(isset($_POST['days']) && isset($_POST['loancat'])){
+    $loancat = $_POST['loancat'];
+    if($loancat == 2){
+      $dor = strtotime($_POST['dor']);
+      $days = $_POST['days'] * 86400;
+      $ldorloan = $dor + $days;
+      echo date("Y-m-d",$ldorloan);
+    }elseif($loancat == 3){
+      $dor = strtotime($_POST['dor']);
+      $weeks = $_POST['days'] * 7 * 86400;
+      $ldorloan = $dor + $weeks;
+      echo date("Y-m-d",$ldorloan);
+    }elseif($loancat == 4){
+      $dor = strtotime($_POST['dor']);
+      $months = $_POST['days'] * 30 * 86400;
+      $ldorloan = $dor + $months;
+      echo date("Y-m-d",$ldorloan);
+    }
   }
-  if(isset($_POST['ldorloan'])){
-    $dor = strtotime($_POST['dor']);
-    $ldorloan = strtotime($_POST['ldorloan']);
-    $days = $ldorloan - $dor;
-    echo date("j",$days);
+
+  if(isset($_POST['ldorloan']) && isset($_POST['loancat'])){
+    $loancat = $_POST['loancat'];
+    if($loancat == 2){
+      $dor = strtotime($_POST['dor']);
+      $ldorloan = strtotime($_POST['ldorloan']);
+      $days = $ldorloan - $dor;
+      echo date("j",$days);
+    }elseif($loancat == 3){
+      $dor = strtotime($_POST['dor']);
+        $ldorloan = strtotime($_POST['ldorloan']);
+        $days = ($ldorloan - $dor) / 86400; // Convert seconds to days
+        $weeks = ceil($days / 7); // Round up to the nearest week
+        echo $weeks;
+    }elseif($loancat == 4){
+      $dor = strtotime($_POST['dor']);
+        $ldorloan = strtotime($_POST['ldorloan']);
+        $days = ($ldorloan - $dor) / 86400; // Convert seconds to days
+        $months = ceil($days / 7); // Round up to the nearest week
+        echo $months;
+    }
   }
 }
 

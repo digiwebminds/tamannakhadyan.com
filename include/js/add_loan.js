@@ -98,6 +98,7 @@ $(document).ready(function() {
         var dor = $("#dorloan").val();
         var ldorloan = $(this).val();
         var loancat = $("#loancategory").val();
+        // alert(loancat);
 
         if(ldorloan < dor){
             $(this).css("border","2px solid red");
@@ -111,7 +112,7 @@ $(document).ready(function() {
         $.ajax({
             url: '../include/ajaxphpfiles/fetch_custname.php',
             type: 'POST',
-            data: { 'dor': dor ,'ldorloan': ldorloan },
+            data: { 'dor': dor ,'ldorloan': ldorloan , 'loancat': loancat},
             success: function(data) {
                 $("#days").val(data);
             }
