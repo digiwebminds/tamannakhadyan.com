@@ -64,6 +64,29 @@ $(document).ready(function () {
         });
     })
 
+    //principle repayment installment entry 
+    $(document).on('click', '#repay-principle-submitbtnn', function (e) {
+        e.preventDefault();
+        var dorepay = $("#dorepay-principal").val();
+        var loan_id = $("#loan_id").val();
+        var principleamt = $("#principle-amount-repay").val();
+
+        $.ajax({
+            url: '../include/ajaxphpfiles/fetch_custname.php',
+            type: 'POST',
+            data: { 'dorepay': dorepay, 'loan_id': loan_id, 'principleamt': principleamt},
+            success: function (data) {
+                $("#principlerepayalert").html(data);
+                window.setTimeout(function(){
+                    $("#myModalrepayprinciple").addClass("hidden");
+                }, 1500);
+            }
+        });
+    })
+
+
+
+
     //all jquery for installment info modal
 
     // Open the modal when the button is clicked
