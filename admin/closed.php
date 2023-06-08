@@ -33,7 +33,7 @@
     $query = "SELECT DISTINCT l.*
     FROM loans AS l
     JOIN repayment AS r ON l.id = r.loan_id
-    WHERE l.duration = (
+    WHERE l.days_weeks_month = (
         SELECT COUNT(loan_id)
         FROM repayment
         WHERE loan_id = l.id

@@ -42,8 +42,6 @@ if (isset($_POST['loanid'])) {
 
   $loanid = $_POST['loanid'];
 
-
-
   // $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count,COUNT(re.loan_id) as emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
   // FROM customers AS c
   // JOIN loans AS l ON c.id = l.customer_id
@@ -132,13 +130,23 @@ if($loan_type==1){
   </td>
   </tr>';
 }
+  if($loan_type == 1){
+    
+    echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
+    <td class="px-6 py-4 border border-gray-700">' . $reminstallmentamount . '
+    </td>
+    </tr>';
+  }else{
+    echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
+    <td class="px-6 py-4 border border-gray-700">' . $row['installment'] . '
+    </td>
+    </tr>';
+  }
+
 
       echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
-      <td class="px-6 py-4 border border-gray-700">' . $reminstallmentamount . '
-      </td>
-      </tr>
-      <tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Total Installment Till Today </th>
       <td class="px-6 py-4 border border-gray-700">'. $totalInstallments .'
       </td>
@@ -214,7 +222,15 @@ if($loan_type==1){
                   </div>
                   <div>
                       <label for="install-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Installment Amount</label>
-                      <input type="number" name="install-amount" id="install-amount" value="' . $reminstallmentamount . '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                      <input type="number" name="install-amount" id="install-amount" value="';
+                      if($loan_type==1){
+
+                       echo $reminstallmentamount;  
+                      }else {
+                       echo $row['installment'];
+                      }
+                      
+                      echo '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                   </div>
                   <div id="repaymentalert"></div>
                   <button type="submit" id="repaysubmitbtnn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">

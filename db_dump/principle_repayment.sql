@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mrawal_tamanna_khadyan`
+-- Database: `tamanna_khadyan`
 --
 
 -- --------------------------------------------------------
@@ -32,8 +32,8 @@ CREATE TABLE `principle_repayment` (
   `id` int NOT NULL,
   `loan_id` int NOT NULL,
   `dorepayment` date NOT NULL,
-  `repay_amount` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `repay_amount` varchar(256) NOT NULL
+)
 
 --
 -- Dumping data for table `principle_repayment`
