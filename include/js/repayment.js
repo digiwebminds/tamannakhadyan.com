@@ -103,6 +103,21 @@ $(document).ready(function () {
 
 
 
+      //all jquery for principal table modal
+
+    // Open the modal when the button is clicked
+    $(document).on('click','#openprincipalpaidtable', function(){
+      $('#paidprincipaltableModal').removeClass('hidden');
+
+    })
+
+    // Close the modal when the close button/icon is clicked
+
+    $(document).on('click','#closeprincipaltableModal', function(){
+      $('#paidprincipaltableModal').addClass('hidden');
+      })
+
+
 
 
 
