@@ -41,13 +41,25 @@ if(isset($_POST['ccprincipal'])){
 if (isset($_POST['loanid'])) {
 
   $loanid = $_POST['loanid'];
-  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count,COUNT(re.loan_id) as emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
-  FROM customers AS c
-  JOIN loans AS l ON c.id = l.customer_id
-  LEFT JOIN repayment AS re ON l.id = re.loan_id
-  WHERE l.id = $loanid
-  GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
-  HAVING phone_count > 0;";
+
+
+
+  // $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count,COUNT(re.loan_id) as emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+  // FROM customers AS c
+  // JOIN loans AS l ON c.id = l.customer_id
+  // LEFT JOIN repayment AS re ON l.id = re.loan_id
+  // WHERE l.id = $loanid
+  // GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+  // HAVING phone_count > 0;";
+
+  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count, COUNT(re.loan_id) AS emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi,SUM(re.	installment_amount) as amount_paid,
+  (SELECT SUM(repay_amount) FROM principle_repayment WHERE loan_id = l.id) AS total_principal_paid
+FROM customers AS c
+JOIN loans AS l ON c.id = l.customer_id
+LEFT JOIN repayment AS re ON l.id = re.loan_id
+WHERE l.id = $loanid
+GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+HAVING phone_count > 0";
 
   $result = mysqli_query($conn, $sql);
   if (mysqli_num_rows($result) > 0) {
@@ -75,7 +87,8 @@ if (isset($_POST['loanid'])) {
       $paidInstallments = $row['emi_count'];
       $unpaidInstallments = $totalInstallments - $paidInstallments;
 
-
+      $remprincipal = $row['principle']- $row["total_principal_paid"];
+      $reminstallmentamount = $remprincipal*($row["roi"]/100);
 
       echo '<div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
   <table class="w-full text-sm text-left font-bold text-gray-500 dark:text-gray-900">
@@ -100,15 +113,29 @@ if (isset($_POST['loanid'])) {
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> City </th>
       <td class="px-6 py-4 border border-gray-700">' . $row['city'] . '
       </td>
-      </tr>
-      <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principle Amount </th>
-      <td class="px-6 py-4 border border-gray-700">' . $row['principle'] . '
-        </td>
-      </tr>
-      <tr class="border-b border-gray-200 dark:border-gray-700">
+      </tr>';
+if($loan_type==1){  
+  echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount Remaining </th>
+  <td class="px-6 py-4 border border-gray-700 text-gray-900">' . $remprincipal . ' &nbsp; &nbsp; &nbsp; | Principal Paid :- '.$row["total_principal_paid"].' | Total Principal :- '.$row["principle"].'
+
+  &nbsp;<button id="openprincipalpaidtable" class="text-black font-bold py-2 px-4 rounded">
+  <i class="fa-solid fa-circle-info"></i>
+  </button>
+
+  </td>
+  </tr>';
+}else {
+  echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount </th>
+  <td class="px-6 py-4 border border-gray-700 text-gray-900">'.$row["principle"].'
+  </td>
+  </tr>';
+}
+
+      echo '<tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
-      <td class="px-6 py-4 border border-gray-700">' . $row['installment'] . '
+      <td class="px-6 py-4 border border-gray-700">' . $reminstallmentamount . '
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -117,8 +144,8 @@ if (isset($_POST['loanid'])) {
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Paid Installments </th>
-      <td class="px-6 py-4 border border-gray-700">'.$paidInstallments.'&nbsp;( Paid Amount: '. $paidInstallments*$row["installment"].')
+      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Paid Installments Amount </th>
+      <td class="px-6 py-4 border border-gray-700">'.$paidInstallments.'&nbsp;( Paid Amount: '. $row["amount_paid"].')
       
       &nbsp;<button id="openpaidinstallmentinfo" class="text-black font-bold py-2 px-4 rounded">
       <i class="fa-solid fa-circle-info"></i>
@@ -128,7 +155,7 @@ if (isset($_POST['loanid'])) {
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> UnPaid Installments </th>
-      <td class="px-6 py-4 border border-gray-700">'.$unpaidInstallments.'&nbsp;( Unpaid Amount: '. $unpaidInstallments*$row["installment"].')
+      <td class="px-6 py-4 border border-gray-700">'.$unpaidInstallments.'
       </td>
       </tr>
       </tr>
@@ -187,7 +214,7 @@ if (isset($_POST['loanid'])) {
                   </div>
                   <div>
                       <label for="install-amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Installment Amount</label>
-                      <input type="number" name="install-amount" id="install-amount" value="' . $row['installment'] . '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                      <input type="number" name="install-amount" id="install-amount" value="' . $reminstallmentamount . '" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                   </div>
                   <div id="repaymentalert"></div>
                   <button type="submit" id="repaysubmitbtnn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
@@ -269,7 +296,6 @@ echo '<div id="paidinstallmentModal" class="fixed inset-0 flex items-center just
     <!-- Remove the nasty inline CSS fixed height on production and replace it with a CSS class — this is just for demonstration purposes! -->
 		<tbody class="bg-grey-light flex flex-col items-center justify-between overflow-y-scroll w-full" style="height: 30vh;">
 			';
-
       require_once "../connect.php";
       
       $sql2 = "SELECT DORepayment,installment_amount FROM `repayment` where loan_id=$loanid";
@@ -288,6 +314,50 @@ echo '<div id="paidinstallmentModal" class="fixed inset-0 flex items-center just
   </div>
   </div>
 </div>';
+
+
+//paid principal table modal here
+
+echo '<div id="paidprincipaltableModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+  
+  <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+    <!-- Modal Content -->
+    <div class="modal-content py-4 text-left px-6">
+      <!-- Close Button/Icon -->
+
+      <button id="closeprincipaltableModal" class="close-button border bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+      <i class="fa-solid fa-xmark"></i>
+</button>
+      <table class="text-left w-full">
+		<thead class="bg-black flex text-white w-full">
+			<tr class="flex w-full mb-4">
+				<th class="p-4 w-1/4">Date</th>
+				<th class="p-4 w-1/4">Installment</th>
+			</tr>
+		</thead>
+    <!-- Remove the nasty inline CSS fixed height on production and replace it with a CSS class — this is just for demonstration purposes! -->
+		<tbody class="bg-grey-light flex flex-col items-center justify-between overflow-y-scroll w-full" style="height: 30vh;">
+			';
+      require_once "../connect.php";
+      
+      $sql2 = "SELECT dorepayment,repay_amount FROM `principle_repayment` where loan_id=$loanid";
+      $result2 = mysqli_query($conn,$sql2);
+      if (mysqli_num_rows($result2) > 0) {
+        while ($row2 = mysqli_fetch_assoc($result2)) {
+
+          echo '<tr class="flex w-full mb-4"><td class="p-4 w-1/4">'.$row2['dorepayment'].'</td>
+          <td class="p-4 w-1/4">'.$row2['repay_amount'].'</td></tr>';
+
+            }
+          }
+				echo'</tbody>
+  </table>
+  </div>
+  </div>
+  </div>
+</div>';
+
     }
   } else {
     echo '<div class="flex p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
@@ -330,7 +400,7 @@ if (isset($_POST['dorepay']) && isset($_POST['loan_id']) && isset($_POST['princi
   $loan_id = $_POST['loan_id'];
   $principleamt = $_POST['principleamt'];
 
-  $sql = "INSERT INTO `principle-repayment` (`loan_id`, `dorepayment`, `repay-amount`) VALUES ('$loan_id', '$dorepay', '$principleamt')";
+  $sql = "INSERT INTO `principle_repayment` (`loan_id`, `dorepayment`, `repay_amount`) VALUES ('$loan_id', '$dorepay', '$principleamt')";
   $result = mysqli_query($conn,$sql);
   if($result){
     echo '<div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
