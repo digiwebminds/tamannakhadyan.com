@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $total = $_POST['total'];
     }
 
-    $sql = "INSERT INTO `loans` (`customer_id`, `customer_name`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days-weeks-month`,`timestamp`) VALUES ('$customerid', '$customername', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$timestamp)";
+    $sql = "INSERT INTO `loans` (`customer_id`, `customer_name`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days_weeks_month`,`timestamp`) VALUES ('$customerid', '$customername', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$timestamp)";
 
     $result = mysqli_query($conn, $sql);
 

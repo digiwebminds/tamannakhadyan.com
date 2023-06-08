@@ -7,7 +7,7 @@ $perPage = new PerPage();
 $sql =  "SELECT DISTINCT l.*
 FROM loans AS l
 JOIN repayment AS r ON l.id = r.loan_id
-WHERE l.duration = (
+WHERE l.days_weeks_month = (
     SELECT COUNT(loan_id)
     FROM repayment
     WHERE loan_id = l.id
@@ -74,7 +74,7 @@ foreach ($faq as $k => $v) {
         <td>" . $faq[$k]['customer_id'] . "</td>
 		<td>" . $faq[$k]['customer_name'] . "</td>
 		<td>" . $faq[$k]['principle'] . "</td>
-		<td>" . $faq[$k]['duration'] . "</td>
+		<td>" . $faq[$k]['days_weeks_month'] . "</td>
 		<td>" . $faq[$k]['loan_type'] . "</td>
 			</tr>";
 }
