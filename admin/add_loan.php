@@ -6,12 +6,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $dorloan = $_POST['dorloan'];
     $loancategory = $_POST['loancategory'];
     $customerid = $_POST['customerid'];
-    $customername = $_POST['customer-name'];
+    // $customername = $_POST['customer-name'];
     $principle = $_POST['principle-amount'];
     $roi = $_POST['roi'];
     $comment = $_POST['comment'];
     $installment = $_POST['installment'];
     $days_weeks_months = $_POST['days'];
+    $ldol = $_POST['ldorloan'];
+    // echo $ldol;
     $timestamp = time();
     
 
@@ -21,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $total = $_POST['total'];
     }
 
-    $sql = "INSERT INTO `loans` (`customer_id`, `customer_name`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days_weeks_month`,`timestamp`) VALUES ('$customerid', '$customername', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$timestamp)";
+    $sql = "INSERT INTO `loans` (`customer_id`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days_weeks_month`,`ldol`,`timestamp`) VALUES ('$customerid', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$ldol,$timestamp)";
 
     $result = mysqli_query($conn, $sql);
 

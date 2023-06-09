@@ -45,6 +45,7 @@ $(document).ready(function () {
 
 
     //repayment installment entry 
+
     $(document).on('click', '#repaysubmitbtnn', function (e) {
         e.preventDefault();
         var dorepay = $("#dorepay").val();
@@ -116,6 +117,20 @@ $(document).ready(function () {
     $(document).on('click','#closeprincipaltableModal', function(){
       $('#paidprincipaltableModal').addClass('hidden');
       })
+
+           //all jquery for unpaid installment table modal
+
+    // Open the modal when the button is clicked
+    $(document).on('click','#openunpaidinstallmenttablemodal', function(){
+        $('#unpaidinstallmenttableModal').removeClass('hidden');
+  
+      })
+  
+      // Close the modal when the close button/icon is clicked
+  
+      $(document).on('click','#closeunpaidinstallmenttableModal', function(){
+        $('#unpaidinstallmenttableModal').addClass('hidden');
+        })
 
 
 

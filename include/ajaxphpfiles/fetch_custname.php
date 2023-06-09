@@ -50,13 +50,13 @@ if (isset($_POST['loanid'])) {
   // GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
   // HAVING phone_count > 0;";
 
-  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count, COUNT(re.loan_id) AS emi_count, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi,SUM(re.	installment_amount) as amount_paid,
+  $sql = "SELECT c.id AS cust_id, l.id, c.name, c.fname, c.city, COUNT(c.phone) AS phone_count, COUNT(re.loan_id) AS emi_count, c.photo, l.principle, l.dor, l.loan_type,l.dor,l.ldol, l.installment, l.roi,SUM(re.	installment_amount) as amount_paid,
   (SELECT SUM(repay_amount) FROM principle_repayment WHERE loan_id = l.id) AS total_principal_paid
 FROM customers AS c
 JOIN loans AS l ON c.id = l.customer_id
 LEFT JOIN repayment AS re ON l.id = re.loan_id
 WHERE l.id = $loanid
-GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type, l.installment, l.roi
+GROUP BY c.id, l.id, c.name, c.fname, c.city, c.photo, l.principle, l.dor, l.loan_type,l.dor,l.ldol, l.installment, l.roi
 HAVING phone_count > 0";
 
   $result = mysqli_query($conn, $sql);
@@ -92,30 +92,43 @@ HAVING phone_count > 0";
   <table class="w-full text-sm text-left font-bold text-gray-500 dark:text-gray-900">
   <tbody>
   <tr class="border-b border-gray-200 dark:border-gray-700">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Loan Type </th>
-        <td class="px-6 py-4 border border-gray-700">' . $loanname . '
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Loan Type </th>
+        <td class="px-6 py-2 border border-gray-700">' . $loanname . '
         </td>
       </tr>
 
   <tr class="border-b border-gray-200 dark:border-gray-700">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Name </th>
-        <td class="px-6 py-4 border border-gray-700">' . $row['name'] . '
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Name </th>
+        <td class="px-6 py-2 border border-gray-700">' . $row['name'] . '
         </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Father Name </th>
-        <td class="px-6 py-4 border border-gray-700">' . $row['fname'] . '
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Start Date </th>
+        <td class="px-6 py-2 border border-gray-700">' . $row['dor'] . '
+        </td>
+      </tr>';
+      if($loan_type== 2 || 3 || 4){
+        echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> End Date </th>
+        <td class="px-6 py-2 border border-gray-700">' . $row['ldol'] . '
+        </td>
+        </tr>';
+      }
+
+      echo '<tr class="border-b border-gray-200 dark:border-gray-700">
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Father Name </th>
+        <td class="px-6 py-2 border border-gray-700">' . $row['fname'] . '
         </td>
         </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> City </th>
-      <td class="px-6 py-4 border border-gray-700">' . $row['city'] . '
+      <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> City </th>
+      <td class="px-6 py-2 border border-gray-700">' . $row['city'] . '
       </td>
       </tr>';
 if($loan_type==1){  
   echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount Remaining </th>
-  <td class="px-6 py-4 border border-gray-700 text-gray-900">' . $remprincipal . ' &nbsp; &nbsp; &nbsp; | Principal Paid :- '.$row["total_principal_paid"].' | Total Principal :- '.$row["principle"].'
+  <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount Remaining </th>
+  <td class="px-6 py-2 border border-gray-700 text-gray-900">' . $remprincipal . ' &nbsp; &nbsp; &nbsp; | Principal Paid :- '.$row["total_principal_paid"].' | Total Principal :- '.$row["principle"].'
 
   &nbsp;<button id="openprincipalpaidtable" class="text-black font-bold py-2 px-4 rounded">
   <i class="fa-solid fa-circle-info"></i>
@@ -125,35 +138,35 @@ if($loan_type==1){
   </tr>';
 }else {
   echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount </th>
-  <td class="px-6 py-4 border border-gray-700 text-gray-900">'.$row["principle"].'
+  <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Principal Amount </th>
+  <td class="px-6 py-2 border border-gray-700 text-gray-900">'.$row["principle"].'
   </td>
   </tr>';
 }
   if($loan_type == 1){
     
     echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
-    <td class="px-6 py-4 border border-gray-700">' . $reminstallmentamount . '
+    <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
+    <td class="px-6 py-2 border border-gray-700">' . $reminstallmentamount . '
     </td>
     </tr>';
   }else{
     echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
-    <td class="px-6 py-4 border border-gray-700">' . $row['installment'] . '
+    <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Installment Amount </th>
+    <td class="px-6 py-2 border border-gray-700">' . $row['installment'] . '
     </td>
     </tr>';
   }
 
 
       echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Total Installment Till Today </th>
-      <td class="px-6 py-4 border border-gray-700">'. $totalInstallments .'
+      <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Total Installment Till Today </th>
+      <td class="px-6 py-2 border border-gray-700">'. $totalInstallments .'
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Paid Installments Amount </th>
-      <td class="px-6 py-4 border border-gray-700">'.$paidInstallments.'&nbsp;( Paid Amount: '. $row["amount_paid"].')
+      <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Paid Installments & Amount </th>
+      <td class="px-6 py-2 border border-gray-700">'.$paidInstallments.'&nbsp;( Paid Amount: '. $row["amount_paid"].')
       
       &nbsp;<button id="openpaidinstallmentinfo" class="text-black font-bold py-2 px-4 rounded">
       <i class="fa-solid fa-circle-info"></i>
@@ -162,21 +175,26 @@ if($loan_type==1){
       </td>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> UnPaid Installments </th>
-      <td class="px-6 py-4 border border-gray-700">'.$unpaidInstallments.'
+      <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> UnPaid Installments </th>
+      <td class="px-6 py-2 border border-gray-700">'.$unpaidInstallments.'
+
+      &nbsp;<button id="openunpaidinstallmenttablemodal" class="text-black font-bold py-2 px-4 rounded">
+      <i class="fa-solid fa-circle-info"></i>
+      </button>
+
       </td>
       </tr>
       </tr>
       <tr class="border-b border-gray-200 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Repay </th>
-      <td class="px-6 py-4 border border-gray-700">
-      <button id="openModalButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pay Installment</button>
+      <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Repay </th>
+      <td class="px-6 py-2 border border-gray-700">
+      <button id="openModalButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded">Pay Installment</button>
       </td>
       </tr>';
       if ($loan_type == 1) {
         echo '<tr class="border-b border-gray-200 dark:border-gray-700">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Repay Principle </th>
-        <td class="px-6 py-4 border border-gray-700">
+        <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 border border-gray-700"> Repay Principle </th>
+        <td class="px-6 py-2 border border-gray-700">
         <button id="openModalprinciplerepay" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pay Principle</button>
         </td>
         </tr>';
@@ -364,9 +382,79 @@ echo '<div id="paidprincipaltableModal" class="fixed inset-0 flex items-center j
 
           echo '<tr class="flex w-full mb-4"><td class="p-4 w-1/4">'.$row2['dorepayment'].'</td>
           <td class="p-4 w-1/4">'.$row2['repay_amount'].'</td></tr>';
-
             }
           }
+				echo'</tbody>
+  </table>
+  </div>
+  </div>
+  </div>
+</div>';
+
+
+
+//unpaid Emi tilldate table modal here
+
+echo '<div id="unpaidinstallmenttableModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+  
+  <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+    <!-- Modal Content -->
+    <div class="modal-content py-4 text-left px-6">
+      <!-- Close Button/Icon -->
+
+      <button id="closeunpaidinstallmenttableModal" class="close-button border bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+      <i class="fa-solid fa-xmark"></i>
+</button>
+      <table class="text-left w-full">
+		<thead class="bg-black flex text-white w-full">
+			<tr class="flex w-full mb-4">
+				<th class="p-4 w-1/4">Date</th>
+				<th class="p-4 w-1/4">Installment</th>
+			</tr>
+		</thead>
+    <!-- Remove the nasty inline CSS fixed height on production and replace it with a CSS class — this is just for demonstration purposes! -->
+		<tbody class="bg-grey-light flex flex-col items-center justify-between overflow-y-scroll w-full" style="height: 30vh;">
+			';
+      require_once "../connect.php";
+      
+
+// Fetch loan start date and last date from the loans table
+$sql = "SELECT dor, ldol FROM loans WHERE id = $loanId";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+$loanStartDate = $row['dor'];
+$loanLastDate = $row['ldol'];
+
+// Fetch installment payment dates from the repayment table
+$sql2 = "SELECT DORepayment FROM repayment WHERE loan_id = $loanId";
+$result2 = mysqli_query($conn, $sql2);
+$paidDates = array();
+while ($row = mysqli_fetch_assoc($result2)) {
+    $paidDates[] = $row['DORepayment'];
+}
+
+// Calculate the missing payment dates
+$startDate = strtotime($loanStartDate);
+$endDate = strtotime($loanLastDate);
+$missingDates = array();
+$currentDate = $startDate;
+while ($currentDate <= $endDate) {
+    $date = date('Y-m-d', $currentDate);
+    if (!in_array($date, $paidDates)) {
+        $missingDates[] = $date;
+    }
+    $currentDate = strtotime('+1 day', $currentDate);
+}
+
+// Display the missing payment dates
+foreach ($missingDates as $date) {
+    echo $date . "<br>";
+    echo '<tr class="flex w-full mb-4"><td class="p-4 w-1/4">'.$date.'</td>
+          <td class="p-4 w-1/4">Nothin</td></tr>';
+}
+
+
 				echo'</tbody>
   </table>
   </div>
