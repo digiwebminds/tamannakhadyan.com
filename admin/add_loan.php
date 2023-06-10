@@ -12,25 +12,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $comment = $_POST['comment'];
     $installment = $_POST['installment'];
     $days_weeks_months = $_POST['days'];
-    $ldol = $_POST['ldorloan'];
-    // echo $ldol;
     $timestamp = time();
-    
-
+    // echo $ldol = $_POST['ldorloan'];
+    // var_dump($ldol);die;
     if($loancategory == 1){
         $total = NULL;
-    }elseif($loancategory == 2 || 3 || 4){
+        $ldol = NULL;
+    }else{
         $total = $_POST['total'];
+        // $ldol = $_POST['ldorloan'];
+        $ldol = $_POST['ldorloan'];
+        // echo $ldol;die;
     }
+    
 
-    $sql = "INSERT INTO `loans` (`customer_id`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days_weeks_month`,`ldol`,`timestamp`) VALUES ('$customerid', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$ldol,$timestamp)";
+    $sql = "INSERT INTO `loans` (`customer_id`, `principle`, `comment`, `dor`, `loan_type`, `installment`, `roi`,`total`,`days_weeks_month`,`timestamp`,`ldol`) VALUES ('$customerid', '$principle', '$comment', '$dorloan', '$loancategory', '$installment', '$roi',$total,$days_weeks_months,$timestamp,$ldol)";
 
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
 
         echo '<div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-            <span class="font-medium">Loan Created!</span><a href="loan.php"> Click here to View Loan Page </a>
+            <span class="font-medium">Loan Created!</span><a href="loans.php"> Click here to View Loan Page </a>
           </div>';
     } else {
         die(mysqli_error($conn));
