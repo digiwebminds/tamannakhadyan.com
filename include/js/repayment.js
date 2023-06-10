@@ -90,13 +90,11 @@ $(document).ready(function () {
 
     //all jquery for installment info modal
 
-    // Open the modal when the button is clicked
+
     $(document).on('click','#openpaidinstallmentinfo', function(){
       $('#paidinstallmentModal').removeClass('hidden');
 
     })
-
-    // Close the modal when the close button/icon is clicked
 
     $(document).on('click','#closeInstallmentinfoModal', function(){
       $('#paidinstallmentModal').addClass('hidden');
@@ -106,30 +104,34 @@ $(document).ready(function () {
 
       //all jquery for principal table modal
 
-    // Open the modal when the button is clicked
     $(document).on('click','#openprincipalpaidtable', function(){
       $('#paidprincipaltableModal').removeClass('hidden');
 
     })
 
-    // Close the modal when the close button/icon is clicked
-
     $(document).on('click','#closeprincipaltableModal', function(){
       $('#paidprincipaltableModal').addClass('hidden');
       })
 
-           //all jquery for unpaid installment table modal
+    //all jquery for unpaid installment table modal
 
-    // Open the modal when the button is clicked
     $(document).on('click','#openunpaidinstallmenttablemodal', function(){
         $('#unpaidinstallmenttableModal').removeClass('hidden');
-  
       })
   
-      // Close the modal when the close button/icon is clicked
-  
-      $(document).on('click','#closeunpaidinstallmenttableModal', function(){
+    $(document).on('click','#closeunpaidinstallmenttableModal', function(){
         $('#unpaidinstallmenttableModal').addClass('hidden');
+        })
+
+
+     //all jquery for total installment table modal
+
+    $(document).on('click','#opentotalinstallmenttablemodal', function(){
+        $('#totalinstallmenttableModal').removeClass('hidden');
+   })
+  
+    $(document).on('click','#closetotalinstallmenttableModal', function(){
+        $('#totalinstallmenttableModal').addClass('hidden');
         })
 
 
